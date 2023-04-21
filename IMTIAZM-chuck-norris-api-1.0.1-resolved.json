@@ -1,0 +1,239 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "api.ChuckNorris.io definition",
+    "description": "This is a simple API for searching Chuck Norris jokes",
+    "contact": {
+      "email": "imtiaz.m@turing.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.chucknorris.io",
+      "description": "Live Site"
+    }
+  ],
+  "tags": [
+    {
+      "name": "jokes",
+      "description": "returns jokes randomly or based on search parameters"
+    }
+  ],
+  "paths": {
+    "/jokes/random": {
+      "get": {
+        "tags": [
+          "jokes"
+        ],
+        "summary": "returns a random joke from the database",
+        "description": "By passing in the appropriate options, get a random joke from the system\n",
+        "operationId": "searchJokes",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "pass an name to be replaced in the jokes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "the category you desire to be the joke to be in the domain of",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JokeItem"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "404": {
+            "description": "may occur if a joke cannot be found"
+          }
+        }
+      }
+    },
+    "/jokes/search": {
+      "get": {
+        "tags": [
+          "jokes"
+        ],
+        "summary": "searches jokens using the given query string",
+        "description": "By passing in the appropriate options, you can search for\navailable jokes in the system by keywords\n",
+        "operationId": "queryJokes",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "pass in a query to search for a joke with",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JokeSearchResult"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JokeSearchError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jokes/categories": {
+      "get": {
+        "tags": [
+          "jokes"
+        ],
+        "summary": "returns all valid categories",
+        "description": "Returns all valid categories.\n",
+        "operationId": "searchCategories",
+        "responses": {
+          "200": {
+            "description": "categories were found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "JokeItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "value": {
+            "type": "string",
+            "example": "A really funny joke"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "icon_url": {
+            "type": "string",
+            "format": "url"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2020-01-05 13:42:19.897976"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2020-01-05 13:42:19.897976"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "JokeSearchResult": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "example": 5
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JokeItem"
+            }
+          }
+        }
+      },
+      "ViolationReasons": {
+        "type": "object",
+        "properties": {
+          "search.query": {
+            "type": "string",
+            "example": "size must be between 3 and 120"
+          }
+        }
+      },
+      "JokeSearchError": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "example": "2023-04-21T00:06:18.092Z"
+          },
+          "status": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "string",
+            "example": "Bad Request"
+          },
+          "message": {
+            "type": "string",
+            "example": "search.query: size must be between 3 and 120"
+          },
+          "violations": {
+            "$ref": "#/components/schemas/ViolationReasons"
+          }
+        }
+      }
+    }
+  }
+}
