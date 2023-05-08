@@ -1,330 +1,566 @@
-openapi: 3.0.0
-servers:
-- url: https://www.mmobomb.com
-  description: mmobomb hostname
-info:
-  description: API for getting MMO games information, news and giveaways
-  version: "1.0.0"
-  title: MMOBombAPI
-  contact:
-    email: imtiaz.m@turing.com
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: gameinfo
-    description: Calls for getting game information
-  - name: giveaways
-    description: Calls for getting giveaways
-  - name: news
-    description: Calls for getting latest news
-paths:
-  /api1/games:
-    get:
-      tags:
-        - gameinfo
-      summary: fetches game information
-      operationId: fetchGames
-      description: By passing query parameter searches mmo games matching the query
-      parameters:
-        - in: query
-          name: platform
-          description: appropriate platform for which you want games
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: category
-          description: particular category of games you want to search
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort-by
-          description: sorting parameter to specify the field on which api will sort the respone
-          required: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GameInfo'
-        '404':
-          description: bad input parameter
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NoGameFound'
-  /api1/game:
-    get:
-      tags:
-        - gameinfo
-      summary: fetches single game information
-      operationId: fetcgGameDetail
-      description: By passing id parameter gets details of a single game
-      parameters:
-        - in: query
-          name: id
-          description: pass appropriate id of a game
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GameDetails'
-
-  /api1/filter:
-    get:
-      tags:
-        - gameinfo
-      summary: filters game information by tag
-      operationId: filterGames
-      description: By passing query parameter searches mmo games matching the filter
-      parameters:
-        - in: query
-          name: tag
-          description: pass tags against which to filter
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: platform
-          description: pass particular platform for which you want to get games
-          required: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GameInfo'
-        '500':
-          description: http error unable to handle request
-                  
-  /api1/giveaways:
-    get:
-      tags:
-        - giveaways
-      summary: fetches active game giveaways
-      operationId: fetchGiveaways
-      description: Gets all active giveways for games
-      responses:
-        '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GiveAwayGame'    
-
-  /api1/latestnews:
-    get:
-      tags:
-        - news
-      summary: fetches game news
-      operationId: fetchGameNews
-      description: Gets all latest game news
-      responses:
-        '200':
-          description: all game news
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GameNews'    
-
-components:
-  schemas:
-    GameInfo:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1136
-        title:
-          type: string
-          example: Overwatch
-        thumbnail:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/g/1136/thumbnail.jpg"
-        short_description:
-          type: string
-          example: "Big changes come to the Overwatch formula in this sequel...and so does PvE content, eventually."
-        game_url:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/open/overwatch-2"
-        genre:
-          type: string
-          example: "Shooter"
-        platform:
-         type: string
-         example: "PC (Windows)"
-        developer:
-         type: string
-         example: "Blizzard Entertainment"
-        release_date:
-         type: string
-         example: "2022-10-04"
-        profile_url:
-         type: string
-
-    NoGameFound:
-      type: object
-      properties:
-        status:
-          type: integer
-          example: 0
-        status_message:
-          type: string
-          example: "No category found, please check the correct parameters."
-
-    GiveAwayGame:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 128102
-        title:
-          type: string
-          example: "Pixel Starships: 200 Starbux Key Giveaway"
-        keys_left:
-          type: string
-          example: "88%"
-        thumbnail:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/file/2023/4/ava-global-bundle-key-giveaway-218x150.png"
-        main_image:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/file/2023/4/viking-rise-gift-pack-key-giveaway.png"
-        short_description:
-          type: string
-          example: "Big changes come to the Overwatch formula in this sequel...and so does PvE content, eventually."
-        giveaway_url:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/giveaway/viking-rise-keys"
-
-    GameNews:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 128102
-        title:
-          type: string
-          example: "Pixel Starships: 200 Starbux Key Giveaway"
-        short_description:
-          type: string
-          example: "Big changes come to the Overwatch formula in this sequel...and so does PvE content, eventually."
-        thumbnail:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/file/2023/4/ava-global-bundle-key-giveaway-218x150.png"
-        main_image:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/file/2023/4/viking-rise-gift-pack-key-giveaway.png"
-        article_content:
-          type: string
-          example: "<p><img class=\"type:primaryImage aligncenter size-large\" src=\"https://www.mmobomb.com/file/2023/5/sea-of-thieves-treasure-hunt-812x456.jpg\" alt=\"Sea Of Thieves Treasure Hunt\" width=\"812\" height=\"456\" /></p>\r\n<p>When you think about pirates, you probably think about treasure\u2026 as well as things like death and scurvy\u2026 but, mostly treasure. When it comes to video game pirates, you probably think about virtual treasure. But! If you\u2019re a player of <a title=\"Sea of Thieves Topic\" href=\"https://www.mmobomb.com/topic/sea-of-thieves\">Sea of Thieves</a>, you\u2019ll now have a chance to take on a special treasure hunt that requires doing work both in-game and out.</p>\r\n<p>Rare announced a new mystery event titled \u201cThe Hoarder\u2019s Hunt\u201d this week dropping teasers and an explanation trailer on their YouTube channel. The event tasks players with solving a mystery and uncovering treasure by following clues that begin in the game, but require them to look outside the game for answers. They\u2019ll then have to come back into the game to search out the locations indicated by their out-of-game research. At the end of the whole thing waits a special real-world reward \u2013 a golden skull. The explanation video includes and artists rendering of the prize. It looks like we\u2019ll have to wait until it\u2019s been awarded to see what it actually looks like.</p>\r\n<p>The Hoarder\u2019s Hunt begins on May 11 and lasts for four weeks. More details are available on the <a title=\"Sea of Thieves Treasure Hunt\" href=\"https://www.seaofthieves.com/news/the-hoarders-hunt-announce\" target=\"_blank\" rel=\"noopener\">Sea of Thieves site</a>.</p>\r\n<p><iframe src=\"https://www.youtube.com/embed/sYjorK0R8UI\" title=\"YouTube video player\" width=\"709\" height=\"418\" allowfullscreen=\"allowfullscreen\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"></iframe> <iframe src=\"https://www.youtube.com/embed/eek6nnw3jzg\" title=\"YouTube video player\" width=\"709\" height=\"418\" allowfullscreen=\"allowfullscreen\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"></iframe></p>"
-        article_url:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/news/sea-of-thieves-announces-an-old-fashioned-treasure-hunt-hoarder-hunt"
-    GameDetails:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1281
-        title:
-          type: string
-          example: "Pixel Starships"
-        thumbnail:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/g/452/thumbnail.jpg"
-        short_description:
-          type: string
-          example: "One of the most popular FPSes in the world is now a free-to-play battle royale: Call of Duty: Warzone. Strive to become the last squad standing in Battle Royale mode, where 150 players loot and shoot their way through an ever-shrinking battlefield; or complete contracts and try to escape with the most cash in Plunder mode."
-        description:
-          type: string
-          example: "<p style=\"text-align: justify;\">One of the most popular FPSes in the world is now a free-to-play battle royale: Call of Duty: Warzone. Strive to become the last squad standing in Battle Royale mode, where 150 players loot and shoot their way through an ever-shrinking battlefield; or complete contracts and try to escape with the most cash in Plunder mode. Money can also buy you weapons and perks from stations throughout the map, but if you're taken out, you'll lose everything you've accumulated!</p>\r\n<p style=\"text-align: justify;\">Another innovation in CoD: Warzone is the gulag. If you're gunned down during a Battle Royale match, you'll be sent to the gulag with a chance to win a 1v1 for the right to return to the battlefield. Also, progression is shared between Warzone and Call of Duty: Modern Warfare. If you don't own CoD:MW, you'll keep your progression from Warzone if you buy it later.</p>\r\n"
-        game_url:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/open/call-of-duty-warzone"
-        genre:
-          type: string
-          example: "shooter"
-        platform:
-          type: string
-          example: "windows"
-        publisher:
-          type: string
-          example: "Activision"
-        developer:
-          type: string
-          example: "Infinity Ward"
-        release_date:
-          type: string
-          example: "2020-03-10"
-        profile_url:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/call-of-duty-warzone"
-        minimum_system_requirements:
-          $ref: '#/components/schemas/GameSystemRequirements'
-        screenshots:
-          type: array
-          items:
-            $ref: '#/components/schemas/GameScreenshot'
-    GameSystemRequirements:
-      type: object
-      properties:
-        os:
-          type: string
-          example: "Windows 7 64-Bit (SP1) or Windows 10 64-Bit"
-        processor:
-          type: string
-          example: "Intel Core i3-4340 or AMD FX-6300"
-        memory:
-          type: string
-          example: "8GB RAM"
-        graphics:
-          type: string
-          example: "NVIDIA GeForce GTX 670 GeForce GTX 1650 or Radeon HD 7950"
-        storage:
-          type: string
-          example: "175GB HD space"
-    GameScreenshot:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1123
-        image:
-          type: string
-          format: url
-          example: "https://www.mmobomb.com/g/452/Call-of-Duty-Warzone-1.jpg"
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MMOBombAPI",
+    "description": "API for getting MMO games information, news and giveaways",
+    "contact": {
+      "email": "imtiaz.m@turing.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://www.mmobomb.com",
+      "description": "mmobomb hostname"
+    }
+  ],
+  "tags": [
+    {
+      "name": "gameinfo",
+      "description": "Calls for getting game information"
+    },
+    {
+      "name": "giveaways",
+      "description": "Calls for getting giveaways"
+    },
+    {
+      "name": "news",
+      "description": "Calls for getting latest news"
+    }
+  ],
+  "paths": {
+    "/api1/games": {
+      "get": {
+        "tags": [
+          "gameinfo"
+        ],
+        "summary": "fetches game information",
+        "description": "By passing query parameter searches mmo games matching the query",
+        "operationId": "fetchGames",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "appropriate platform for which you want games",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pc",
+                "browser",
+                "all"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "particular category of games you want to search",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "mmorpg",
+                "shooter",
+                "strategy",
+                "moba",
+                "racing",
+                "sports",
+                "social",
+                "sandbox",
+                "open-world",
+                "survival",
+                "pvp",
+                "pve",
+                "pixel",
+                "voxel",
+                "zombie",
+                "turn-based",
+                "first-person",
+                "third-Person",
+                "top-down",
+                "tank",
+                "space",
+                "sailing",
+                "side-scroller",
+                "superhero",
+                "permadeath",
+                "card",
+                "battle-royale",
+                "mmo",
+                "mmofps",
+                "mmotps",
+                "3d",
+                "2d",
+                "anime",
+                "fantasy",
+                "sci-fi",
+                "fighting",
+                "action-rpg",
+                "action",
+                "military",
+                "martial-arts",
+                "flight",
+                "low-spec",
+                "tower-defense",
+                "horror",
+                "mmorts"
+              ]
+            }
+          },
+          {
+            "name": "sort-by",
+            "in": "query",
+            "description": "sorting parameter to specify the field on which api will sort the respone",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "release-date",
+                "popularity",
+                "alphabetical",
+                "relevance"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameInfo"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "bad input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoGameFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api1/game": {
+      "get": {
+        "tags": [
+          "gameinfo"
+        ],
+        "summary": "fetches single game information",
+        "description": "By passing id parameter gets details of a single game",
+        "operationId": "fetcgGameDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "pass appropriate id of a game",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameDetails"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api1/filter": {
+      "get": {
+        "tags": [
+          "gameinfo"
+        ],
+        "summary": "filters game information by tag",
+        "description": "By passing query parameter searches mmo games matching the filter",
+        "operationId": "filterGames",
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "pass tags against which to filter",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "appropriate platform for which you want games",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pc",
+                "browser",
+                "all"
+              ]
+            }
+          },
+          {
+            "name": "sort-by",
+            "in": "query",
+            "description": "sorting parameter to specify the field on which api will sort the respone",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "release-date",
+                "popularity",
+                "alphabetical",
+                "relevance"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "http error unable to handle request"
+          }
+        }
+      }
+    },
+    "/api1/giveaways": {
+      "get": {
+        "tags": [
+          "giveaways"
+        ],
+        "summary": "fetches active game giveaways",
+        "description": "Gets all active giveways for games",
+        "operationId": "fetchGiveaways",
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GiveAwayGame"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api1/latestnews": {
+      "get": {
+        "tags": [
+          "news"
+        ],
+        "summary": "fetches game news",
+        "description": "Gets all latest game news",
+        "operationId": "fetchGameNews",
+        "responses": {
+          "200": {
+            "description": "all game news",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameNews"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GameInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1136
+          },
+          "title": {
+            "type": "string",
+            "example": "Overwatch"
+          },
+          "thumbnail": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/g/1136/thumbnail.jpg"
+          },
+          "short_description": {
+            "type": "string",
+            "example": "Big changes come to the Overwatch formula in this sequel...and so does PvE content, eventually."
+          },
+          "game_url": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/open/overwatch-2"
+          },
+          "genre": {
+            "type": "string",
+            "example": "Shooter"
+          },
+          "platform": {
+            "type": "string",
+            "example": "PC (Windows)"
+          },
+          "developer": {
+            "type": "string",
+            "example": "Blizzard Entertainment"
+          },
+          "release_date": {
+            "type": "string",
+            "example": "2022-10-04"
+          },
+          "profile_url": {
+            "type": "string"
+          }
+        }
+      },
+      "NoGameFound": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 0
+          },
+          "status_message": {
+            "type": "string",
+            "example": "No category found, please check the correct parameters."
+          }
+        }
+      },
+      "GiveAwayGame": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 128102
+          },
+          "title": {
+            "type": "string",
+            "example": "Pixel Starships: 200 Starbux Key Giveaway"
+          },
+          "keys_left": {
+            "type": "string",
+            "example": "88%"
+          },
+          "thumbnail": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/file/2023/4/ava-global-bundle-key-giveaway-218x150.png"
+          },
+          "main_image": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/file/2023/4/viking-rise-gift-pack-key-giveaway.png"
+          },
+          "short_description": {
+            "type": "string",
+            "example": "Big changes come to the Overwatch formula in this sequel...and so does PvE content, eventually."
+          },
+          "giveaway_url": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/giveaway/viking-rise-keys"
+          }
+        }
+      },
+      "GameNews": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 128102
+          },
+          "title": {
+            "type": "string",
+            "example": "Pixel Starships: 200 Starbux Key Giveaway"
+          },
+          "short_description": {
+            "type": "string",
+            "example": "Big changes come to the Overwatch formula in this sequel...and so does PvE content, eventually."
+          },
+          "thumbnail": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/file/2023/4/ava-global-bundle-key-giveaway-218x150.png"
+          },
+          "main_image": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/file/2023/4/viking-rise-gift-pack-key-giveaway.png"
+          },
+          "article_content": {
+            "type": "string",
+            "example": "<p><img class=\"type:primaryImage aligncenter size-large\" src=\"https://www.mmobomb.com/file/2023/5/sea-of-thieves-treasure-hunt-812x456.jpg\" alt=\"Sea Of Thieves Treasure Hunt\" width=\"812\" height=\"456\" /></p>\r\n<p>When you think about pirates, you probably think about treasure… as well as things like death and scurvy… but, mostly treasure. When it comes to video game pirates, you probably think about virtual treasure. But! If you’re a player of <a title=\"Sea of Thieves Topic\" href=\"https://www.mmobomb.com/topic/sea-of-thieves\">Sea of Thieves</a>, you’ll now have a chance to take on a special treasure hunt that requires doing work both in-game and out.</p>\r\n<p>Rare announced a new mystery event titled “The Hoarder’s Hunt” this week dropping teasers and an explanation trailer on their YouTube channel. The event tasks players with solving a mystery and uncovering treasure by following clues that begin in the game, but require them to look outside the game for answers. They’ll then have to come back into the game to search out the locations indicated by their out-of-game research. At the end of the whole thing waits a special real-world reward – a golden skull. The explanation video includes and artists rendering of the prize. It looks like we’ll have to wait until it’s been awarded to see what it actually looks like.</p>\r\n<p>The Hoarder’s Hunt begins on May 11 and lasts for four weeks. More details are available on the <a title=\"Sea of Thieves Treasure Hunt\" href=\"https://www.seaofthieves.com/news/the-hoarders-hunt-announce\" target=\"_blank\" rel=\"noopener\">Sea of Thieves site</a>.</p>\r\n<p><iframe src=\"https://www.youtube.com/embed/sYjorK0R8UI\" title=\"YouTube video player\" width=\"709\" height=\"418\" allowfullscreen=\"allowfullscreen\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"></iframe> <iframe src=\"https://www.youtube.com/embed/eek6nnw3jzg\" title=\"YouTube video player\" width=\"709\" height=\"418\" allowfullscreen=\"allowfullscreen\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"></iframe></p>"
+          },
+          "article_url": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/news/sea-of-thieves-announces-an-old-fashioned-treasure-hunt-hoarder-hunt"
+          }
+        }
+      },
+      "GameDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1281
+          },
+          "title": {
+            "type": "string",
+            "example": "Pixel Starships"
+          },
+          "thumbnail": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/g/452/thumbnail.jpg"
+          },
+          "short_description": {
+            "type": "string",
+            "example": "One of the most popular FPSes in the world is now a free-to-play battle royale: Call of Duty: Warzone. Strive to become the last squad standing in Battle Royale mode, where 150 players loot and shoot their way through an ever-shrinking battlefield; or complete contracts and try to escape with the most cash in Plunder mode."
+          },
+          "description": {
+            "type": "string",
+            "example": "<p style=\"text-align: justify;\">One of the most popular FPSes in the world is now a free-to-play battle royale: Call of Duty: Warzone. Strive to become the last squad standing in Battle Royale mode, where 150 players loot and shoot their way through an ever-shrinking battlefield; or complete contracts and try to escape with the most cash in Plunder mode. Money can also buy you weapons and perks from stations throughout the map, but if you're taken out, you'll lose everything you've accumulated!</p>\r\n<p style=\"text-align: justify;\">Another innovation in CoD: Warzone is the gulag. If you're gunned down during a Battle Royale match, you'll be sent to the gulag with a chance to win a 1v1 for the right to return to the battlefield. Also, progression is shared between Warzone and Call of Duty: Modern Warfare. If you don't own CoD:MW, you'll keep your progression from Warzone if you buy it later.</p>\r\n"
+          },
+          "game_url": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/open/call-of-duty-warzone"
+          },
+          "genre": {
+            "type": "string",
+            "example": "shooter"
+          },
+          "platform": {
+            "type": "string",
+            "example": "windows"
+          },
+          "publisher": {
+            "type": "string",
+            "example": "Activision"
+          },
+          "developer": {
+            "type": "string",
+            "example": "Infinity Ward"
+          },
+          "release_date": {
+            "type": "string",
+            "example": "2020-03-10"
+          },
+          "profile_url": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/call-of-duty-warzone"
+          },
+          "minimum_system_requirements": {
+            "$ref": "#/components/schemas/GameSystemRequirements"
+          },
+          "screenshots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameScreenshot"
+            }
+          }
+        }
+      },
+      "GameSystemRequirements": {
+        "type": "object",
+        "properties": {
+          "os": {
+            "type": "string",
+            "example": "Windows 7 64-Bit (SP1) or Windows 10 64-Bit"
+          },
+          "processor": {
+            "type": "string",
+            "example": "Intel Core i3-4340 or AMD FX-6300"
+          },
+          "memory": {
+            "type": "string",
+            "example": "8GB RAM"
+          },
+          "graphics": {
+            "type": "string",
+            "example": "NVIDIA GeForce GTX 670 GeForce GTX 1650 or Radeon HD 7950"
+          },
+          "storage": {
+            "type": "string",
+            "example": "175GB HD space"
+          }
+        }
+      },
+      "GameScreenshot": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1123
+          },
+          "image": {
+            "type": "string",
+            "format": "url",
+            "example": "https://www.mmobomb.com/g/452/Call-of-Duty-Warzone-1.jpg"
+          }
+        }
+      }
+    }
+  }
+}
