@@ -211,7 +211,7 @@
           {
             "name": "tag",
             "in": "query",
-            "description": "pass tags against which to filter",
+            "description": "pass tags against which to filter, tag can contain a category or a dot (.) seperated combination of categories which are mmorpg, shooter, strategy, moba, racing, sports, social, sandbox, open-world, survival, pvp, pve, pixel, voxel, zombie, turn-based, first-person, third-Person, top-down, tank, space, sailing, side-scroller, superhero, permadeath, card, battle-royale, mmo, mmofps, mmotps, 3d, 2d, anime, fantasy, sci-fi, fighting, action-rpg, action, military, martial-arts, flight, low-spec, tower-defense, horror, mmorts",
             "required": true,
             "style": "form",
             "explode": true,
